@@ -1,19 +1,22 @@
 # my-todo
 
-## Project setup
-```
-npm install
-```
+## USE
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+- Typescript
+- Vue Composition Api
+- Vuetify
+- Mongodb Stitch
+- Tencent Serverless
 
-### Compiles and minifies for production
-```
-npm run build
-```
+## TODO
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+- Mongodb stitch find do not support skip, use aggreation
+- Global message
+
+## Doc
+
+- > https://vue-composition-api-rfc.netlify.com/
+- > https://docs.mongodb.com/stitch
+- > https://docs.mongodb.com/manual/reference/method/js-collection/
+- > https://vuetifyjs.com/en/
+- > https://materialdesignicons.com/

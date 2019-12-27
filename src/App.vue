@@ -1,32 +1,54 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
-  </div>
+  <v-app>
+    <v-app-bar app color="primary" class="white--text">
+      <v-toolbar-title>ToDo Application</v-toolbar-title>
+    </v-app-bar>
+    <v-content>
+      <v-container fluid>
+        <router-view v-if="showRouter" />
+      </v-container>
+    </v-content>
+    <v-footer app>
+      <span>-</span>
+    </v-footer>
+    <!-- overlay -->
+    <v-overlay :value="loading" z-index="9999">
+      <v-progress-circular indeterminate size="64"></v-progress-circular>
+    </v-overlay>
+    <!-- login -->
+    <v-dialog v-model="needLogin" max-width="900" persistent="">
+      <login></login>
+    </v-dialog>
+  </v-app>
 </template>
-
-<style lang="less">
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
+<script lang="ts">
+import { createComponent, onMounted, reactive, ref, computed, watch } from "@vue/composition-api";
+import Api from "./api";
+import Login from "@/components/Login.vue";
+export default createComponent({
+  components: {
+    Login
+  },
+  setup() {
+    let showRouter = ref(true);
+    let loading = Api.loading;
+    let needLogin = Api.needLogin;
+    watch(loading, loading => console.info("loading", loading));
+    watch(needLogin, (n, o) => {
+      console.info(n, o);
+      if (n === false && o === true) {
+        showRouter.value = false;
+        setTimeout(() => {
+          showRouter.value = true;
+        }, 0);
+      }
+    });
+    return {
+      loading,
+      needLogin,
+      showRouter
+    };
   }
-}
-</style>
+});
+</script>
+<style lang="less"></style>
