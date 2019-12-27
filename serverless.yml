@@ -1,9 +1,0 @@
-myWebsite:
-  component: "@serverless/tencent-website"
-  inputs:
-    code:
-      src: ./dist
-      index: index.html
-      error: index.html
-    region: ap-guangzhou
-    bucketName: my-bucket
