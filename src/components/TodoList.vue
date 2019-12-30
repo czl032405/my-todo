@@ -1,11 +1,15 @@
 <template>
-  <v-container class="todo-list pa-0  pa-lg-5" fluid>
+  <v-container class="todo-list pa-0 pa-lg-5" fluid>
     <v-row>
       <v-col class="d-none d-md-block flex-grow-0">
         <v-card outlined tile>
           <v-card-title>Options</v-card-title>
           <v-card-text>
-            <v-date-picker :value="selectedDate | date" @change="handleDatePicker" :show-week="true"></v-date-picker>
+            <v-date-picker
+              :value="selectedDate | date"
+              @change="handleDatePicker"
+              :show-week="true"
+            ></v-date-picker>
           </v-card-text>
         </v-card>
       </v-col>
@@ -17,33 +21,50 @@
               <v-icon>mdi-page-first</v-icon>
             </v-btn>
 
-            <v-btn text class="px-1" @click="$vuetify.breakpoint.smAndDown && (showDatePicker = true)">{{ from | date }} -- {{ to | date }}</v-btn>
+            <v-btn
+              text
+              class="px-1"
+              @click="$vuetify.breakpoint.smAndDown && (showDatePicker = true)"
+            >{{ from | date }} -- {{ to | date }}</v-btn>
             <v-btn outlined color="secondary" class="d-none d-sm-block" @click="goNextWeek()">Next</v-btn>
             <v-btn fab x-small text color="secondary" class="d-sm-none" @click="goNextWeek()">
               <v-icon>mdi-page-last</v-icon>
             </v-btn>
           </v-container>
 
-          <v-list three-line v-for="(todos, key) in groupTodos" :key="key">
+          <v-list three-line v-for="(group) in groupTodos" :key="group.date">
             <v-subheader>
-              <span>{{ dateTitle(key) }}</span>
+              <span
+                class="grey--text"
+                :class="isThisweek(group.date)&&'text--darken-1'"
+              >{{ dateTitle(group.date) }}</span>
               <v-btn fab text x-small color="secondary" class="ml-2" @click="showAddTodo(key)">
                 <v-icon>mdi-plus</v-icon>
               </v-btn>
             </v-subheader>
-            <v-list-item v-for="(todo, ix) in todos" :key="ix">
+            <v-list-item v-for="(todo, ix) in group.todos" :key="ix">
               <v-list-item-action class="mt-5">
                 <v-checkbox v-model="todo.isFinish" @change="updateTodo(todo)"></v-checkbox>
               </v-list-item-action>
               <v-list-item-content class="mt-2">
-                <v-list-item-title>{{ todo.title }}</v-list-item-title>
+                <v-list-item-title
+                  class="grey--text"
+                  :class="isThisweek(group.date)&&'text--darken-4'"
+                >{{ todo.title }}</v-list-item-title>
                 <v-list-item-subtitle>
-                  <pre>{{ todo.desc }}</pre>
+                  <pre class="grey--text caption" :class="isThisweek(group.date)&&'text--darken-2'">{{ todo.desc }}</pre>
                 </v-list-item-subtitle>
               </v-list-item-content>
               <v-list-item-action>
                 <v-flex>
-                  <v-btn fab text x-small color="secondary" class="ml-2" @click="showEditTodo(todo)">
+                  <v-btn
+                    fab
+                    text
+                    x-small
+                    color="secondary"
+                    class="ml-2"
+                    @click="showEditTodo(todo)"
+                  >
                     <v-icon>mdi-pencil</v-icon>
                   </v-btn>
                   <v-btn fab text x-small color="error" class="ml-2" @click="showDeleteTodo(todo)">
@@ -71,14 +92,19 @@
               showDelete = false;
               deleteTodo();
             "
-            >Confirm</v-btn
-          >
+          >Confirm</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
     <!-- edit dialog -->
     <v-dialog v-model="showEdit" max-width="900">
-      <todo-edit v-if="showEdit" :id="selectedTodo && selectedTodo._id" :date="selectedDate" @saved="handleSaved" @cancel="showEdit = false"></todo-edit>
+      <todo-edit
+        v-if="showEdit"
+        :id="selectedTodo && selectedTodo._id"
+        :date="selectedDate"
+        @saved="handleSaved"
+        @cancel="showEdit = false"
+      ></todo-edit>
     </v-dialog>
 
     <!-- date picker dialog -->
@@ -130,17 +156,18 @@ export default createComponent({
       }
       todos.value.map(todo => {
         let key = moment(todo.date).format("YYYY-MM-DD");
-        result[key] && result[key].push(todo);
+        result[key] = result[key] || [];
+        result[key].push(todo);
       });
-      return result;
 
-      // return todos.value.reduce<{ [key: string]: ITodo[] }>((acc, todo) => {
-      //   let key = moment(todo.date).format("YYYY-MM-DD");
-      //   acc[key] = acc[key] || [];
-      //   acc[key].push(todo);
-      //   return acc;
-      // }, {});
+      let arrResult = Object.keys(result)
+        .map(key => ({ date: key, todos: result[key] }))
+        .sort((a, b) => (a.date > b.date ? 1 : -1));
+      console.info(arrResult);
+      return arrResult;
     });
+
+    let isThisweek = computed(() => (date: Date) => moment(date).isBetween(moment(from.value), moment(to.value), "day", "[]"));
 
     let dateTitle = computed(() => (dateString: string) =>
       moment(dateString)
@@ -203,12 +230,9 @@ export default createComponent({
       loadTodos();
     };
 
-    watch(
-      computed(() => from.value.toString() + to.value.toString()),
-      async () => {
-        loadTodos();
-      }
-    );
+    watch(computed(() => from.value.toString() + to.value.toString()), async () => {
+      loadTodos();
+    });
 
     watch(selectedDate, selectedDate => {
       from.value = moment(selectedDate)
@@ -234,6 +258,7 @@ export default createComponent({
       selectedTodo,
       selectedDate,
       //computed
+      isThisweek,
       groupTodos,
       dateTitle,
       // methods

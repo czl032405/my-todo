@@ -25,33 +25,45 @@ class TodoApi {
       let { pageNo = 1, pageSize = 20, q = "", sort = "-date rank", from, to } = cond;
 
       // match
-      let $match: any = {};
+      let $match: any = {
+        $and: [
+          //
+          { $or: [] },
+          {
+            $or: [
+              {
+                date: {
+                  $lte: new Date("3000-01-01"),
+                  $gte: new Date("2000-01-01")
+                }
+              },
+              { isFinish: false }
+            ]
+          }
+        ]
+      };
 
-      let $or: { [x: string]: RegExp }[] = [];
       if (q) {
         let searchFields = "title,desc,type";
         let expq = new RegExp(q, "i");
         searchFields
           .split(",")
           .map(a => a.trim())
-          .map(a => $or.push({ [a]: expq }));
-      }
-      if ($or.length) {
-        $match.$or = $or;
+          .map(a => $match.$and[0].$or.push({ [a]: expq }));
       }
 
       if (from) {
-        $match.date = $match.date || {};
-        $match.date.$gte = from;
+        $match.$and[1].$or[0].date.$gte = from;
       }
 
       if (to) {
-        $match.date = $match.date || {};
-        $match.date.$lte = to;
+        $match.$and[1].$or[0].date.$lte = to;
       }
 
+      $match.$and = $match.$and.filter(cond => cond.$or.length);
+
       // sort
-      let sortObj = sort
+      let $sort = sort
         .split(" ")
         .filter(Boolean)
         .reduce((acc, s) => {
@@ -60,11 +72,15 @@ class TodoApi {
         }, {});
 
       //query
-      let todos: ITodo[] = await TodoCollection.find($match, {
-        sort: sortObj,
-        // skip: (+pageNo - 1) * +pageSize,
-        limit: +pageSize
-      }).asArray();
+      let todos: ITodo[] = await TodoCollection.aggregate(
+        [
+          //
+          { $match },
+          { $sort },
+          { $skip: (+pageNo - 1) * +pageSize },
+          pageSize && { $limit: +pageSize }
+        ].filter(Boolean)
+      ).asArray();
 
       let total: number = await TodoCollection.count($match);
 
@@ -73,7 +89,7 @@ class TodoApi {
         page: {
           pageNo: +pageNo,
           pageSize: +pageSize,
-          totalPage: Math.ceil(total / pageSize),
+          totalPage: pageSize ? Math.ceil(total / pageSize) : 1,
           total: total
         }
       };
@@ -111,6 +127,7 @@ class TodoApi {
       todo.createdAt = new Date();
       todo.updatedAt = new Date();
       todo.title = todo.title || "Title";
+      todo.isFinish = todo.isFinish || false;
       todo.date =
         todo.date ||
         moment()

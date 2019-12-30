@@ -10,7 +10,6 @@
 
 ## TODO
 
-- Mongodb stitch find do not support skip, use aggreation
 - Global message
 
 ## Doc
