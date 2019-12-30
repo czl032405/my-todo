@@ -9,8 +9,8 @@ const routes: RouteConfig[] = [
   {
     path: "/",
     name: "home",
-    // component: TodoList,
-    redirect: "/todos"
+    component: TodoList
+    // redirect: "/todos"
   },
   {
     path: "/todos",

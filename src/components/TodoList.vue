@@ -50,7 +50,10 @@
                 <v-list-item-title
                   class="grey--text"
                   :class="isThisweek(group.date)&&'text--darken-4'"
-                >{{ todo.title }}</v-list-item-title>
+                >
+                  {{ todo.title }}
+                  <v-chip light small v-if="todo.type">{{todo.type}}</v-chip>
+                </v-list-item-title>
                 <v-list-item-subtitle>
                   <pre class="grey--text caption" :class="isThisweek(group.date)&&'text--darken-2'">{{ todo.desc }}</pre>
                 </v-list-item-subtitle>

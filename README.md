@@ -10,6 +10,8 @@
 
 ## TODO
 
+- Notification in PWA
+- Edit Logo
 - Global message
 
 ## Doc

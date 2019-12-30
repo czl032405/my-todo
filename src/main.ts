@@ -6,6 +6,7 @@ import router from "./router";
 import "./filter";
 import "./db";
 import Api from "./api";
+import "./service-worker-register";
 
 Vue.use(Vuetify);
 Vue.use(VueCompositionApi);
