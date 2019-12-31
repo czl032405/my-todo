@@ -10,8 +10,10 @@
 
 ## TODO
 
+- bug: default date when creating
+- add important field
+- type selecting
 - Notification in PWA
-- Edit Logo
 - Global message
 
 ## Doc
