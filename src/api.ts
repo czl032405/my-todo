@@ -129,6 +129,7 @@ class TodoApi {
       todo.updatedAt = new Date();
       todo.title = todo.title || "Title";
       todo.isFinish = todo.isFinish || false;
+      todo.isImportant = todo.isImportant || false;
       todo.date =
         todo.date ||
         moment()

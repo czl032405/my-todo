@@ -60,6 +60,9 @@
                 >
                   {{ todo.title }}
                   <v-chip light small v-if="todo.type">{{todo.type}}</v-chip>
+                  <v-chip color="white" light small v-if="todo.isImportant">
+                    <v-icon color="warning">mdi-star</v-icon>
+                  </v-chip>
                 </v-list-item-title>
                 <v-list-item-subtitle>
                   <pre class="grey--text caption" :class="isThisweek(group.date)&&'text--darken-2'">{{ todo.desc }}</pre>

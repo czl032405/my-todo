@@ -3,7 +3,7 @@
     <v-app-bar app color="primary" class="white--text">
       <v-toolbar-title>ToDo Application</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn color="white" text @click="changeLang" width="50">{{lang}}</v-btn>
+      <v-btn style="display:none" color="white" text @click="changeLang" width="50">{{lang}}</v-btn>
     </v-app-bar>
     <v-content>
       <v-container fluid>

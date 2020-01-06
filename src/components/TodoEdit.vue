@@ -26,6 +26,7 @@
           ></v-date-picker>
         </v-dialog>
         <v-textarea v-model="todo.desc" label="desc"></v-textarea>
+        <v-switch v-model="todo.isImportant" label="Important"></v-switch>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
@@ -75,7 +76,7 @@ export default createComponent({
       let form = context["refs"]["form"];
       let result = form.validate();
       if (result) {
-        await Api.Todo.update(todo.value._id, { title: todo.value.title, desc: todo.value.desc, type: todo.value.type, date: todo.value.date });
+        await Api.Todo.update(todo.value._id, { title: todo.value.title, desc: todo.value.desc, type: todo.value.type, date: todo.value.date, isImportant: todo.value.isImportant });
         !modal && router.push("/todos");
         context.emit("saved");
       }

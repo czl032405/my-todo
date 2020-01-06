@@ -7,6 +7,7 @@ interface ITodo {
   date?: Date;
   rank?: number;
   isFinish?: boolean;
+  isImportant?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }

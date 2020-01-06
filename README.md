@@ -12,7 +12,7 @@
 
 - [x] Bug: default date when creating todo
 - [x] Edit index api, Call the 2 api concurrently
-- [ ] Change week begining with monday
+- [x] Change week begining with monday
 - [ ] Add important field
 - [ ] Todo Type selecting
 - [ ] Notification in PWA
