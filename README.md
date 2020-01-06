@@ -1,5 +1,7 @@
 # my-todo
 
+![badge](https://github.com/czl032405/my-todo/workflows/BUILD/badge.svg)
+
 ## USE
 
 - Typescript
@@ -17,7 +19,7 @@
 - [x] Add important field
 - [x] Global message
 - [x] Notification in PWA
-- [ ] Github CI & Badges
+- [x] Github CI & Badges
 - [ ] Todo Type AutoComplete
 - [ ] Statistics for todo records
 - [ ] PROXY stitch to tencent serverless function using service-worker
