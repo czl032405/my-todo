@@ -20,6 +20,7 @@
 - [x] Global message
 - [x] Notification in PWA
 - [x] Github CI & Badges
+- [ ] Edit list data instead of calling index api after create/update/remove action
 - [ ] Detect URL in todo desc
 - [ ] Todo Type AutoComplete
 - [ ] Statistics for todo records
