@@ -11,17 +11,17 @@
 ## TODO
 
 - [x] Bug: default date when creating todo
+- [x] Add Workbox Service Worker
 - [x] Edit index api, Call the 2 api concurrently
 - [x] Change week begining with monday
-- [ ] Add important field
-- [ ] Todo Type selecting
+- [x] Add important field
+- [x] Global message
 - [ ] Notification in PWA
-- [ ] Global message
-- [ ] Statistics for todo records
-- [ ] Script to Edit COS CacheControl when deploying
-- [ ] PROXY stitch to tencent serverless function using service-worker
 - [ ] Github CI & Badges
-- [x] Add Workbox Service Worker
+- [ ] Todo Type AutoComplete
+- [ ] Statistics for todo records
+- [ ] PROXY stitch to tencent serverless function using service-worker
+- [ ] Script to Edit COS CacheControl when deploying
 
 ## Doc
 

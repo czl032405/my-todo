@@ -130,6 +130,7 @@
 import { createComponent, onMounted, reactive, ref, computed, watch } from "@vue/composition-api";
 import moment from "moment";
 import Api from "../api";
+import MessageBox from "../message-box";
 import TodoEdit from "@/components/TodoEdit.vue";
 
 export default createComponent({
@@ -235,6 +236,8 @@ export default createComponent({
     let deleteTodo = async function() {
       let todo = selectedTodo.value;
       await Api.Todo.delete(todo._id!);
+      MessageBox.globalMessage.value = "Deleted Success";
+
       loadTodos();
     };
 

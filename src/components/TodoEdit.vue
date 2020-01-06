@@ -41,6 +41,8 @@ import Vue from "vue";
 import { createComponent, onMounted, reactive, ref, computed, watch } from "@vue/composition-api";
 import moment from "moment";
 import Api from "../api";
+import MessageBox from "../message-box";
+
 import { BSON } from "mongodb-stitch-browser-sdk";
 import router from "../router";
 
@@ -68,6 +70,8 @@ export default createComponent({
       let result = form.validate();
       if (result) {
         await Api.Todo.insert(todo.value);
+        MessageBox.globalMessage.value = "Saved Success";
+
         !modal && router.push("/todos");
         context.emit("saved");
       }
@@ -77,6 +81,7 @@ export default createComponent({
       let result = form.validate();
       if (result) {
         await Api.Todo.update(todo.value._id, { title: todo.value.title, desc: todo.value.desc, type: todo.value.type, date: todo.value.date, isImportant: todo.value.isImportant });
+        MessageBox.globalMessage.value = "Updated Success";
         !modal && router.push("/todos");
         context.emit("saved");
       }

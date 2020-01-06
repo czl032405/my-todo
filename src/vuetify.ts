@@ -3,7 +3,6 @@ import Vuetify from "vuetify/lib";
 import zhHans from "vuetify/src/locale/zh-Hans";
 import en from "vuetify/src/locale/en";
 
-Vue.use(Vuetify);
 let vuetify = new Vuetify({
   lang: {
     locales: { zhHans, en },

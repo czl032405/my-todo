@@ -185,8 +185,8 @@ class TodoApi {
 
 class Api {
   static Todo = TodoApi;
-  static loading: Ref<boolean> = null;
-  static needLogin: Ref<boolean> = null;
+  static loading: Ref<boolean> = ref(false);
+  static needLogin: Ref<boolean> = ref(false);
   static async checkLogin() {}
   static async auth(username: string, password: string) {
     setLoading(true);
@@ -197,11 +197,7 @@ class Api {
     setTimeout(() => {}, 0);
     setLoading(false);
   }
-  static init() {
-    Api.loading = ref(false);
-    Api.needLogin = ref(false);
-  }
 }
 
-(<any>window).Api = Api;
+globalThis.Api = Api;
 export default Api;

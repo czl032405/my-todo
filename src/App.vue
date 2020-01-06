@@ -13,6 +13,11 @@
     <v-footer app>
       <span>-</span>
     </v-footer>
+    <!-- snackbar -->
+    <v-snackbar v-model="showSnackbar" :timeout="3000">
+      {{ globalMessage }}
+      <v-btn color="pink" text @click="showSnackbar = false">Close</v-btn>
+    </v-snackbar>
     <!-- overlay -->
     <v-overlay :value="loading" z-index="9999">
       <v-progress-circular indeterminate size="64"></v-progress-circular>
@@ -28,15 +33,18 @@ import { createComponent, onMounted, reactive, ref, computed, watch } from "@vue
 import Api from "./api";
 import Login from "@/components/Login.vue";
 import vuetify from "./vuetify";
+import MessageBox from "./message-box";
 export default createComponent({
   components: {
     Login
   },
   setup() {
     let showRouter = ref(true);
+    let showSnackbar = ref(false);
     let lang = ref("en");
     let loading = Api.loading;
     let needLogin = Api.needLogin;
+    let globalMessage = MessageBox.globalMessage;
 
     watch(needLogin, (n, o) => {
       if (n === false && o === true) {
@@ -52,6 +60,8 @@ export default createComponent({
       $vuetify.lang.current = lang;
     });
 
+    watch(globalMessage, globalMessage => globalMessage && (showSnackbar.value = true));
+
     const changeLang = async function() {
       let langs = ["zhHans", "en"];
       let currentIndex = langs.indexOf(lang.value);
@@ -59,10 +69,12 @@ export default createComponent({
     };
 
     return {
+      showSnackbar,
+      showRouter,
       lang,
       loading,
       needLogin,
-      showRouter,
+      globalMessage,
       changeLang
     };
   }
