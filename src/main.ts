@@ -1,37 +1,24 @@
 import Vue from "vue";
 import App from "./App.vue";
 import VueCompositionApi from "@vue/composition-api";
-import Vuetify from "vuetify/lib";
 import router from "./router";
-import "./filter";
-import "./db";
+import vuetify from "./vuetify";
 import Api from "./api";
+import moment from "moment";
+import "./filter";
 import "./service-worker-register";
 
-Vue.use(Vuetify);
+moment.locale("zh-cn");
+
+globalThis.moment = moment;
+
 Vue.use(VueCompositionApi);
 Api.init();
 
 Vue.config.productionTip = false;
 
-let vuetify = new Vuetify({
-  theme: {
-    themes: {
-      light: {
-        primary: "#9c27b0",
-        secondary: "#3f51b5",
-        accent: "#f44336",
-        error: "#e91e63",
-        warning: "#ffc107",
-        info: "#2196f3",
-        success: "#4caf50"
-      }
-    }
-  }
-});
-
 new Vue({
   router,
-  vuetify: vuetify,
+  vuetify,
   render: h => h(App)
 }).$mount("#app");

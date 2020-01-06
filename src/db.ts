@@ -25,7 +25,7 @@ const test = async function() {
   console.log("Found docs", todos);
 };
 
-(<any>window).createUser = createUser;
+globalThis.createUser = createUser;
 
 // auth();
 // test();

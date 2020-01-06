@@ -3,7 +3,12 @@
     <v-card>
       <v-card-title>{{ isAdd ? "Add Todo" : "Edit Todo" }}</v-card-title>
       <v-card-text>
-        <v-text-field v-model="todo.title" label="title" required :rules="[v => !!v || 'Title is required']"></v-text-field>
+        <v-text-field
+          v-model="todo.title"
+          label="title"
+          required
+          :rules="[v => !!v || 'Title is required']"
+        ></v-text-field>
         <v-text-field v-model="todo.type" label="type"></v-text-field>
         <v-dialog ref="dateDialog" max-width="320" content-class="ma-0">
           <template v-slot:activator="{ on }">
@@ -18,8 +23,7 @@
                 $refs.dateDialog.save();
               }
             "
-          >
-          </v-date-picker>
+          ></v-date-picker>
         </v-dialog>
         <v-textarea v-model="todo.desc" label="desc"></v-textarea>
       </v-card-text>
@@ -87,7 +91,6 @@ export default createComponent({
     };
 
     watch(id, id => {
-      console.info("id changed");
       loadData();
     });
 

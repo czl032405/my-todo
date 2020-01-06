@@ -3,7 +3,7 @@
     <v-row>
       <v-col class="d-none d-md-block flex-grow-0">
         <v-card outlined tile>
-          <v-card-title>Options</v-card-title>
+          <!-- <v-card-title></v-card-title> -->
           <v-card-text>
             <v-date-picker
               :value="selectedDate | date"
@@ -38,7 +38,14 @@
                 class="grey--text"
                 :class="isThisweek(group.date)&&'text--darken-1'"
               >{{ dateTitle(group.date) }}</span>
-              <v-btn fab text x-small color="secondary" class="ml-2" @click="showAddTodo(key)">
+              <v-btn
+                fab
+                text
+                x-small
+                color="secondary"
+                class="ml-2"
+                @click="showAddTodo(group.date)"
+              >
                 <v-icon>mdi-plus</v-icon>
               </v-btn>
             </v-subheader>
@@ -150,7 +157,7 @@ export default createComponent({
 
     let selectedTodo = ref<ITodo>();
 
-    let selectedDate = ref<Date>();
+    let selectedDate = ref<Date>(new Date());
 
     let groupTodos = computed(() => {
       let result: { [key: string]: ITodo[] } = {};
@@ -166,17 +173,12 @@ export default createComponent({
       let arrResult = Object.keys(result)
         .map(key => ({ date: key, todos: result[key] }))
         .sort((a, b) => (a.date > b.date ? 1 : -1));
-      console.info(arrResult);
       return arrResult;
     });
 
     let isThisweek = computed(() => (date: Date) => moment(date).isBetween(moment(from.value), moment(to.value), "day", "[]"));
 
-    let dateTitle = computed(() => (dateString: string) =>
-      moment(dateString)
-        .locale("zh-cn")
-        .format("YYYY-MM-DD ddd")
-    );
+    let dateTitle = computed(() => (dateString: string) => moment(dateString).format("YYYY-MM-DD ddd"));
 
     // methods
     let handleDatePicker = async function(datestr) {
@@ -206,9 +208,9 @@ export default createComponent({
         .toDate();
     };
     let showAddTodo = async function(dateString: string) {
-      showEdit.value = true;
       selectedDate.value = moment(dateString).toDate();
       selectedTodo.value = undefined;
+      showEdit.value = true;
     };
     let showEditTodo = async function(todo: ITodo) {
       showEdit.value = true;

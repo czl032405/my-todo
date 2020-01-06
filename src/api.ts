@@ -72,17 +72,18 @@ class TodoApi {
         }, {});
 
       //query
-      let todos: ITodo[] = await TodoCollection.aggregate(
-        [
-          //
-          { $match },
-          { $sort },
-          { $skip: (+pageNo - 1) * +pageSize },
-          pageSize && { $limit: +pageSize }
-        ].filter(Boolean)
-      ).asArray();
-
-      let total: number = await TodoCollection.count($match);
+      let [todos, total]: [ITodo[], number] = await Promise.all([
+        TodoCollection.aggregate(
+          [
+            //
+            { $match },
+            { $sort },
+            { $skip: (+pageNo - 1) * +pageSize },
+            pageSize && { $limit: +pageSize }
+          ].filter(Boolean)
+        ).asArray(),
+        TodoCollection.count($match)
+      ]);
 
       let result = {
         data: todos.map(t => ({ ...t, _id: t._id + "" })),
