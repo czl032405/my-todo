@@ -211,6 +211,18 @@ export default createComponent({
         .add(1, "week")
         .toDate();
     };
+
+    let loadTodos = async function() {
+      let result = await Api.Todo.index({ from: from.value, to: to.value, pageSize: 0 });
+      todos.value = result.data;
+      let todayTodos = todos.value.filter(todo => moment(todo.date).isSame(moment(), "day"));
+      if (!sessionStorage.getItem("isShowNotification")) {
+        let title = `${moment().format("YYYY-MM-DD")} ToDos`;
+        let message = `${todayTodos.map(todo => todo.title).join("\n")}`;
+        showNotification(title, message);
+        sessionStorage.setItem("isShowNotification", moment().format("YYYY-MM-DD"));
+      }
+    };
     let showAddTodo = async function(dateString: string) {
       selectedDate.value = moment(dateString).toDate();
       selectedTodo.value = undefined;
@@ -225,10 +237,7 @@ export default createComponent({
       selectedTodo.value = todo;
       showDelete.value = true;
     };
-    let loadTodos = async function() {
-      let result = await Api.Todo.index({ from: from.value, to: to.value, pageSize: 0 });
-      todos.value = result.data;
-    };
+
     let addTodo = async function(date: string) {};
     let updateTodo = async function(todo: ITodo) {
       await Api.Todo.update(todo._id!, { isFinish: todo.isFinish });
@@ -239,6 +248,19 @@ export default createComponent({
       MessageBox.globalMessage.value = "Deleted Success";
 
       loadTodos();
+    };
+
+    let showNotification = async function(title: string, message: string) {
+      if (Notification.permission == "granted") {
+        let reg = await navigator.serviceWorker.getRegistration();
+        let options = {
+          body: message,
+          icon: "/favicon-512x512.png",
+          vibrate: [100, 50, 100],
+          actions: [{ action: "close", title: "Close" }]
+        };
+        reg.showNotification(title, options);
+      }
     };
 
     watch(computed(() => from.value.toString() + to.value.toString()), async () => {
