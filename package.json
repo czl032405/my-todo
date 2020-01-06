@@ -6,7 +6,8 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "dev": "npm run serve",
-    "pro": "npm run build"
+    "pro": "npm run build",
+    "deploy": "npm run pro && serverless"
   },
   "dependencies": {
     "@vue/composition-api": "^0.3.4",
