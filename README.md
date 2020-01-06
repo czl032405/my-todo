@@ -20,6 +20,7 @@
 - [x] Global message
 - [x] Notification in PWA
 - [x] Github CI & Badges
+- [ ] Detect URL in todo desc
 - [ ] Todo Type AutoComplete
 - [ ] Statistics for todo records
 - [ ] PROXY stitch to tencent serverless function using service-worker
