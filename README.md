@@ -17,11 +17,11 @@
 - [x] Add important field
 - [x] Global message
 - [x] Notification in PWA
-- [ ] Script to Edit COS CacheControl when deploying
 - [ ] Github CI & Badges
 - [ ] Todo Type AutoComplete
 - [ ] Statistics for todo records
 - [ ] PROXY stitch to tencent serverless function using service-worker
+- [ ] Script to Edit COS CacheControl when deploying
 
 ## Doc
 
