@@ -1,0 +1,28 @@
+{
+  "name": "my-todo-serverless",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "clean": "node copy-dist-file",
+    "build": "npm run clean && tsc --sourceMap false --declaration false",
+    "dev": "npm run clean && tsc --watch"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/cheerio": "^0.22.15",
+    "@types/node": "^13.1.8",
+    "copy-dir": "^1.2.0",
+    "del": "^5.1.0",
+    "miniprogram-api-typings": "^2.10.1",
+    "typescript": "^3.7.4"
+  },
+  "dependencies": {
+    "axios": "^0.19.1",
+    "cheerio": "^1.0.0-rc.3",
+    "moment": "^2.24.0",
+    "promise-pool-tool": "^1.2.1",
+    "wx-server-sdk": "^1.8.0"
+  }
+}

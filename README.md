@@ -1,37 +1,70 @@
-# my-todo
+## my-comic-server
 
-![badge](https://github.com/czl032405/my-todo/workflows/BUILD/badge.svg)
+Heroku App, NestJS, 代理接口、代理下载图片
 
-## USE
+## my-comic-mp
 
-- Typescript
-- Vue Composition Api
-- Vuetify
-- Mongodb Stitch
-- Tencent COS
+微信小程序, weui
 
-## TODO
+## my-comic-serverless
 
-- [x] Bug: default date when creating todo
-- [x] Add Workbox Service Worker
-- [x] Edit index api, Call the 2 api concurrently
-- [x] Change week begining with monday
-- [x] Add important field
-- [x] Global message
-- [x] Notification in PWA
-- [x] Github CI & Badges
-- [ ] Edit list data instead of calling index api after create/update/remove action
-- [ ] Detect URL in todo desc
-- [ ] Todo Type AutoComplete
-- [ ] Statistics for todo records
-- [ ] PROXY stitch to tencent serverless function using service-worker
-- [ ] Script to Edit COS CacheControl when deploying
+微信云开发, Comic Apis [pica][pingcc]
 
-## Doc
+## todo
 
-- > https://vue-composition-api-rfc.netlify.com/
-- > https://docs.mongodb.com/stitch
-- > https://docs.mongodb.com/manual/reference/method/js-collection/
-- > https://vuetifyjs.com/en/
-- > https://materialdesignicons.com/
-- > https://developers.google.com/web/tools/workbox/modules/workbox-routing
+- [ ] mangabz
+- [ ] auto testing
+
+## magabz images
+
+1. http://www.mangabz.com/m94617-p3/
+   -> MANGABZ_CID / COMIC_MID / MANGABZ_VIEWSIGN / MANGABZ_VIEWSIGN_DT
+2. http://www.mangabz.com/m94617-p3/chapterimage.ashx?cid=94617&page=3&key=&_cid=94617&_mid=73&_dt=2020-01-21+20%3A33%3A10&_sign=c12f486d7f8b3c4e1058561b9b56baf9
+   eval
+   ....
+
+3.
+
+## project commands
+
+```s
+# run script with scope
+lerna run --scope *server  dev --parallel
+lerna run --scope *serverless  dev --parallel
+lerna run --scope *mp  dev --parallel
+lerna run build --parallel
+
+```
+
+## deploy server on heroku
+
+```s
+git subtree push --prefix packages/my-comic-server origin heroku
+
+```
+
+## lerna commands
+
+```s
+# Create a new lerna repo or upgrade an existing repo to the current version of Lerna.
+lerna init
+
+# Bootstrap the packages in the current Lerna repo. Installing all their dependencies and linking any cross-dependencies.
+lerna bootstrap
+
+# Create a new release of the packages that have been updated. Prompts for a new version and updates all the packages on git and npm.
+lerna publish
+
+#Check which packages have changed since the last release.
+lerna changed
+
+#Diff all packages or a single package since the last release
+lerna diff [package?]
+
+#Run an npm script in each package that contains that script.
+lerna run [script]
+
+#List all of the public packages in the current Lerna repo.
+lerna ls
+
+```

@@ -1,0 +1,9 @@
+{
+  "desc": "my-comic",
+  "rules": [
+    {
+      "action": "allow",
+      "page": "*"
+    }
+  ]
+}

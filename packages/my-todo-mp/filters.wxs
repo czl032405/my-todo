@@ -1,0 +1,3 @@
+module.exports.getMediaUrl = function(media) {
+  return media;
+};
