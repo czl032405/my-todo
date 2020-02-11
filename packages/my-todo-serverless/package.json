@@ -13,6 +13,7 @@
   "devDependencies": {
     "@types/cheerio": "^0.22.15",
     "@types/node": "^13.1.8",
+    "@types/wx-server-sdk": "^0.8.0",
     "copy-dir": "^1.2.0",
     "del": "^5.1.0",
     "miniprogram-api-typings": "^2.10.1",
