@@ -1,0 +1,48 @@
+[
+  {
+    "name": "todo-index",
+    "value": {
+      "method": "index",
+      "params": {}
+    }
+  },
+  {
+    "name": "todo-add",
+    "value": {
+      "method": "add",
+      "params": {
+        "doc": {
+          "title": "test"
+        }
+      }
+    }
+  },
+  {
+    "name": "todo-init",
+    "value": {
+      "method": "init",
+      "params": {}
+    }
+  },
+  {
+    "name": "todo-get",
+    "value": {
+      "method": "get",
+      "params": {
+        "id": "e30d61715e4ba2a0006351e34870ef01"
+      }
+    }
+  },
+  {
+    "name": "todo-undate",
+    "value": {
+      "method": "update",
+      "params": {
+        "id": "e30d61715e4ba2a0006351e34870ef01",
+        "doc": {
+          "title": "title updated"
+        }
+      }
+    }
+  }
+]

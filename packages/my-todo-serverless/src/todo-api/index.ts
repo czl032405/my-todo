@@ -2,17 +2,23 @@ import Axios from "axios";
 import * as cloud from "wx-server-sdk";
 import { database } from "wx-server-sdk";
 import * as moment from "moment";
+
+console.info(cloud.version);
+
 cloud.init({
   env: (<any>cloud).DYNAMIC_CURRENT_ENV
 });
 
 const db = database();
 const _ = db.command;
-const todoCollection = db.collection("todo");
+const todoCollection = db.collection("todos");
 
-const init = async function() {};
+const init = async function() {
+  let result = await db.createCollection("todos");
+  return result;
+};
 
-const list = async function(cond: { pageNo?: number; pageSize?: number; q?: string; from?: Date; to?: Date; sort?: string } = {}) {
+const index = async function(cond: { pageNo?: number; pageSize?: number; q?: string; from?: Date; to?: Date; sort?: string } = {}) {
   let { pageNo = 1, pageSize = 20, q = "", sort = "-date rank", from, to } = cond;
   from = from || new Date("2000-01-01");
   to = to || new Date("3000-01-01");
@@ -28,31 +34,35 @@ const list = async function(cond: { pageNo?: number; pageSize?: number; q?: stri
     }, {});
 
   let $match: { [fieldName: string]: any } = {};
-  $match.date = _.gte(+from).lte(+to);
-
-  var aa = { date: _.gte(+from).lte(+to) };
-  // let a = _.or([{ title: /a/ }]);
+  $match.date = _.gt(from).lt(to);
 
   if (q) {
     $match.title = new RegExp(q, "i");
   }
 
-  console.info($match);
-
-  let result = await todoCollection
-    .aggregate()
-    .match($match)
-    .sort($sort)
+  let indexResult = await todoCollection
+    .where($match)
+    .orderBy("date", "asc")
     .skip(skip)
     .limit(limit || 10000)
-    .end();
+    .get();
 
-  return result;
+  let countResult = await todoCollection.where($match).count();
+  let total: number = countResult.total;
+  return {
+    data: indexResult.data,
+    page: {
+      pageNo: +pageNo,
+      pageSize: +pageSize,
+      totalPage: pageSize ? Math.ceil(total / pageSize) : 1,
+      total: total
+    }
+  };
 };
 
 const get = async function(id: string) {
   let result = await todoCollection.doc(id).get();
-  return result;
+  return result.data;
 };
 
 const add = async function(todo: ITodo = {}) {
@@ -71,17 +81,17 @@ const add = async function(todo: ITodo = {}) {
   let result = await todoCollection.add({
     data: todo
   });
-  return result;
+  return result._id;
 };
 
 const update = async function(id: string, patch: ITodo) {
   let result = await todoCollection.doc(id).update({ data: patch });
-  return result;
+  return result.stats;
 };
 
 const remove = async function(id: string) {
   let result = await todoCollection.doc(id).remove();
-  return result;
+  return result.stats;
 };
 
 export async function main(event, context) {
@@ -89,8 +99,10 @@ export async function main(event, context) {
   try {
     const { method = "", params = {} } = event;
     switch (method) {
-      case "list":
-        return await list(params);
+      case "init":
+        return await init();
+      case "index":
+        return await index(params);
         break;
       case "get":
         return await get(params.id);
@@ -104,6 +116,8 @@ export async function main(event, context) {
       case "remove":
         return await remove(params.id);
         break;
+      default:
+        throw new Error("Not Supported Method");
     }
   } catch (error) {
     console.error(error);
@@ -113,5 +127,4 @@ export async function main(event, context) {
       throw new Error(error);
     }
   }
-  return 1;
 }
