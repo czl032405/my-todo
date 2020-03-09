@@ -10,21 +10,6 @@ const createUser = async function(u: string, p: string) {
   console.info("[MongoDB Stitch] User Created Success");
 };
 
-const auth = async function(u: string, p: string) {
-  let credential = new UserPasswordCredential(u, p);
-  let user = await client.auth.loginWithCredential(credential);
-  console.info("[MongoDB Stitch] Auth Success", user);
-};
-
-const test = async function() {
-  await db.collection("todos").updateOne({ owner_id: client.auth.user.id }, { $set: { title: "test-title" } }, { upsert: true });
-  let todos: ITodo[] = await db
-    .collection("todos")
-    .find({}, { limit: 100 })
-    .asArray();
-  console.log("Found docs", todos);
-};
-
 globalThis.createUser = createUser;
 
 // auth();

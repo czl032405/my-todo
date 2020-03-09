@@ -1,8 +1,9 @@
 import { db, client } from "./db";
 import moment from "moment";
 import { ref, Ref } from "@vue/composition-api";
-import { BSON, StitchClientError } from "mongodb-stitch-browser-sdk";
+import { BSON, StitchClientError, StitchServiceError } from "mongodb-stitch-browser-sdk";
 import { Stitch, RemoteMongoClient, UserPasswordCredential, UserPasswordAuthProviderClient } from "mongodb-stitch-browser-sdk";
+import MessageBox from "./message-box";
 
 const TodoCollection = db.collection("todos");
 
@@ -10,18 +11,29 @@ const setLoading = function(loading: boolean) {
   Api.loading.value = loading;
 };
 
-const handleStitchError = function(error: StitchClientError | Error) {
-  if (error instanceof StitchClientError) {
-    if (error.errorCodeName == "MustAuthenticateFirst") {
-      Api.needLogin.value = true;
+const callStitch = async function<T>(asyncFunc: () => Promise<T>): Promise<T> {
+  try {
+    setLoading(true);
+    let result = await asyncFunc();
+    return result;
+  } catch (error) {
+    if (error instanceof StitchClientError) {
+      if (error.errorCodeName == "MustAuthenticateFirst") {
+        Api.needLogin.value = true;
+      }
     }
+    if (error instanceof StitchServiceError) {
+      MessageBox.globalMessage.value = error.message;
+    }
+    throw error;
+  } finally {
+    setLoading(false);
   }
 };
 
 class TodoApi {
   static async index(cond: { pageNo?: number; pageSize?: number; q?: string; from?: Date; to?: Date; sort?: string } = {}) {
-    try {
-      setLoading(true);
+    return await callStitch(async function() {
       let { pageNo = 1, pageSize = 20, q = "", sort = "-date rank", from, to } = cond;
 
       // match
@@ -86,7 +98,7 @@ class TodoApi {
       ]);
 
       let result = {
-        data: todos.map(t => ({ ...t, _id: t._id + "" })),
+        data: todos.map<ITodo>(t => ({ ...t, _id: t._id + "" })),
         page: {
           pageNo: +pageNo,
           pageSize: +pageSize,
@@ -96,34 +108,22 @@ class TodoApi {
       };
       console.info(result);
       return result;
-    } catch (error) {
-      handleStitchError(error);
-      throw error;
-    } finally {
-      setLoading(false);
-    }
+    });
   }
 
   static async get(_id: string) {
-    try {
-      setLoading(true);
+    return await callStitch(async function() {
       let todo: ITodo = await TodoCollection.findOne({ _id: new BSON.ObjectId(_id) });
       if (todo) {
         todo._id = todo._id + "";
       }
-      console.info(todo);
+
       return todo;
-    } catch (error) {
-      handleStitchError(error);
-      throw error;
-    } finally {
-      setLoading(false);
-    }
+    });
   }
 
   static async insert(todo: ITodo = {}) {
-    try {
-      setLoading(true);
+    return await callStitch(async function() {
       todo.owner_id = client.auth.user.id;
       todo.createdAt = new Date();
       todo.updatedAt = new Date();
@@ -140,46 +140,26 @@ class TodoApi {
       if (result && result.insertedId) {
         result.insertedId = result.insertedId + "";
       }
-      console.info(result);
       return result;
-    } catch (error) {
-      handleStitchError(error);
-      throw error;
-    } finally {
-      setLoading(false);
-    }
+    });
   }
 
-  static async delete(_id: string): Promise<{ deletedCount: number }> {
-    try {
-      setLoading(true);
+  static async delete(_id: string) {
+    return await callStitch(async function() {
       let result = await TodoCollection.deleteOne({ _id: new BSON.ObjectId(_id) });
-      console.info(result);
       return result;
-    } catch (error) {
-      handleStitchError(error);
-      throw error;
-    } finally {
-      setLoading(false);
-    }
+    });
   }
 
   static async update(_id: string, patch: ITodo) {
-    try {
-      setLoading(true);
+    return await callStitch(async function() {
       patch.updatedAt = new Date();
       let todo: ITodo = await TodoCollection.findOneAndUpdate({ _id: new BSON.ObjectId(_id) }, { $set: patch });
       if (todo) {
         todo._id = todo._id + "";
       }
-      console.info(todo);
       return todo;
-    } catch (error) {
-      handleStitchError(error);
-      throw error;
-    } finally {
-      setLoading(false);
-    }
+    });
   }
 }
 
@@ -189,13 +169,18 @@ class Api {
   static needLogin: Ref<boolean> = ref(false);
   static async checkLogin() {}
   static async auth(username: string, password: string) {
-    setLoading(true);
-    let credential = new UserPasswordCredential(username, password);
-    let user = await client.auth.loginWithCredential(credential);
-    Api.needLogin.value = false;
-    console.info("[MongoDB Stitch] Auth Success", user);
-    setTimeout(() => {}, 0);
-    setLoading(false);
+    return await callStitch(async function() {
+      let credential = new UserPasswordCredential(username, password);
+      let user = await client.auth.loginWithCredential(credential);
+      Api.needLogin.value = false;
+      return user;
+    });
+  }
+  static async logout() {
+    return await callStitch(async function() {
+      let result = await client.auth.logout();
+      return result;
+    });
   }
 }
 

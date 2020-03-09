@@ -48,7 +48,6 @@ import router from "../router";
 
 export default createComponent({
   setup(props, context) {
-    console.info(context);
     let id = ref<string>(context.attrs.id);
     let date = ref<Date>(context.attrs.date);
     let modal = ref<boolean>(context.attrs.modal);
@@ -57,7 +56,6 @@ export default createComponent({
     let isAdd = computed(() => !id.value || id.value == "new" || !BSON.ObjectID.isValid(id.value));
 
     let loadData = async function() {
-      console.info(id.value);
       if (isAdd.value) {
         todo.value = { date: date.value };
       } else {
@@ -100,7 +98,6 @@ export default createComponent({
       loadData();
     });
 
-    onMounted(() => console.info("Todo Edit Mounted"));
 
     return {
       //data

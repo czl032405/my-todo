@@ -5,11 +5,7 @@
         <v-card outlined tile>
           <!-- <v-card-title></v-card-title> -->
           <v-card-text>
-            <v-date-picker
-              :value="selectedDate | date"
-              @change="handleDatePicker"
-              :show-week="true"
-            ></v-date-picker>
+            <v-date-picker :value="selectedDate | date" @change="handleDatePicker" :show-week="true"></v-date-picker>
           </v-card-text>
         </v-card>
       </v-col>
@@ -21,31 +17,17 @@
               <v-icon>mdi-page-first</v-icon>
             </v-btn>
 
-            <v-btn
-              text
-              class="px-1"
-              @click="$vuetify.breakpoint.smAndDown && (showDatePicker = true)"
-            >{{ from | date }} -- {{ to | date }}</v-btn>
+            <v-btn text class="px-1" @click="$vuetify.breakpoint.smAndDown && (showDatePicker = true)">{{ from | date }} -- {{ to | date }}</v-btn>
             <v-btn outlined color="secondary" class="d-none d-sm-block" @click="goNextWeek()">Next</v-btn>
             <v-btn fab x-small text color="secondary" class="d-sm-none" @click="goNextWeek()">
               <v-icon>mdi-page-last</v-icon>
             </v-btn>
           </v-container>
 
-          <v-list three-line v-for="(group) in groupTodos" :key="group.date">
+          <v-list three-line v-for="group in groupTodos" :key="group.date">
             <v-subheader>
-              <span
-                class="grey--text"
-                :class="isThisweek(group.date)&&'text--darken-1'"
-              >{{ dateTitle(group.date) }}</span>
-              <v-btn
-                fab
-                text
-                x-small
-                color="secondary"
-                class="ml-2"
-                @click="showAddTodo(group.date)"
-              >
+              <span class="grey--text" :class="isThisweek(group.date) && 'text--darken-1'">{{ dateTitle(group.date) }}</span>
+              <v-btn fab text x-small color="secondary" class="ml-2" @click="showAddTodo(group.date)">
                 <v-icon>mdi-plus</v-icon>
               </v-btn>
             </v-subheader>
@@ -54,30 +36,20 @@
                 <v-checkbox v-model="todo.isFinish" @change="updateTodo(todo)"></v-checkbox>
               </v-list-item-action>
               <v-list-item-content class="mt-2">
-                <v-list-item-title
-                  class="grey--text"
-                  :class="isThisweek(group.date)&&'text--darken-4'"
-                >
+                <v-list-item-title class="grey--text" :class="isThisweek(group.date) && 'text--darken-4'">
                   {{ todo.title }}
-                  <v-chip light small v-if="todo.type">{{todo.type}}</v-chip>
+                  <v-chip light small v-if="todo.type">{{ todo.type }}</v-chip>
                   <v-chip color="white" light small v-if="todo.isImportant">
                     <v-icon color="warning">mdi-star</v-icon>
                   </v-chip>
                 </v-list-item-title>
                 <v-list-item-subtitle>
-                  <pre class="grey--text caption" :class="isThisweek(group.date)&&'text--darken-2'">{{ todo.desc }}</pre>
+                  <pre class="grey--text caption" :class="isThisweek(group.date) && 'text--darken-2'">{{ todo.desc }}</pre>
                 </v-list-item-subtitle>
               </v-list-item-content>
               <v-list-item-action>
                 <v-flex>
-                  <v-btn
-                    fab
-                    text
-                    x-small
-                    color="secondary"
-                    class="ml-2"
-                    @click="showEditTodo(todo)"
-                  >
+                  <v-btn fab text x-small color="secondary" class="ml-2" @click="showEditTodo(todo)">
                     <v-icon>mdi-pencil</v-icon>
                   </v-btn>
                   <v-btn fab text x-small color="error" class="ml-2" @click="showDeleteTodo(todo)">
@@ -105,19 +77,14 @@
               showDelete = false;
               deleteTodo();
             "
-          >Confirm</v-btn>
+            >Confirm</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
     <!-- edit dialog -->
     <v-dialog v-model="showEdit" max-width="900">
-      <todo-edit
-        v-if="showEdit"
-        :id="selectedTodo && selectedTodo._id"
-        :date="selectedDate"
-        @saved="handleSaved"
-        @cancel="showEdit = false"
-      ></todo-edit>
+      <todo-edit v-if="showEdit" :id="selectedTodo && selectedTodo._id" :date="selectedDate" @saved="handleSaved" @cancel="showEdit = false"></todo-edit>
     </v-dialog>
 
     <!-- date picker dialog -->
@@ -263,9 +230,12 @@ export default createComponent({
       }
     };
 
-    watch(computed(() => from.value.toString() + to.value.toString()), async () => {
-      loadTodos();
-    });
+    watch(
+      computed(() => from.value.toString() + to.value.toString()),
+      async () => {
+        loadTodos();
+      }
+    );
 
     watch(selectedDate, selectedDate => {
       from.value = moment(selectedDate)
@@ -274,10 +244,6 @@ export default createComponent({
       to.value = moment(selectedDate)
         .endOf("week")
         .toDate();
-    });
-
-    onMounted(async () => {
-      console.info("ToDo List Mounted");
     });
 
     return {

@@ -10,9 +10,7 @@ import { createComponent, onMounted } from "@vue/composition-api";
 export default createComponent({
   // type inference enabled
   setup() {
-    onMounted(() => {
-      console.info("Helloword Mounted");
-    });
+    onMounted(() => {});
     return {};
   }
 });

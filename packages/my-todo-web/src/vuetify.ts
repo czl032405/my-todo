@@ -23,6 +23,4 @@ let vuetify = new Vuetify({
   }
 });
 
-console.info(vuetify);
-
 export default vuetify;

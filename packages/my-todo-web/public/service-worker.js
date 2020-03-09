@@ -1,19 +1,15 @@
-console.info("service-worker");
+importScripts("https://storage.googleapis.com/workbox-cdn/releases/5.0.0/workbox-sw.js");
 
-importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.1/workbox-sw.js");
+workbox.core.clientsClaim();
 
-workbox.clientsClaim();
-
-workbox.skipWaiting();
-
-// workbox.setConfig({ debug: true });
+workbox.core.skipWaiting();
 
 workbox.routing.registerRoute(
   /\/[^\.]*\.[^\.]*\.(?:js|css)$/,
-  workbox.strategies.cacheFirst({
+  new workbox.strategies.CacheFirst({
     cacheName: "static",
     plugins: [
-      new workbox.expiration.Plugin({
+      new workbox.expiration.ExpirationPlugin({
         maxAgeSeconds: 365 * 24 * 60 * 60
       })
     ]
@@ -22,10 +18,10 @@ workbox.routing.registerRoute(
 
 workbox.routing.registerRoute(
   /\/[^\.]*\.(?:js|css)$/,
-  workbox.strategies.networkFirst({
+  new workbox.strategies.NetworkFirst({
     cacheName: "static",
     plugins: [
-      new workbox.expiration.Plugin({
+      new workbox.expiration.ExpirationPlugin({
         maxAgeSeconds: 60 * 60
       })
     ]
@@ -34,10 +30,10 @@ workbox.routing.registerRoute(
 
 workbox.routing.registerRoute(
   /\/.*\.(?:png|jpg|jpeg|svg|gif|ico)$/,
-  workbox.strategies.cacheFirst({
+  new workbox.strategies.CacheFirst({
     cacheName: "static",
     plugins: [
-      new workbox.expiration.Plugin({
+      new workbox.expiration.ExpirationPlugin({
         maxAgeSeconds: 365 * 24 * 60 * 60
       })
     ]
@@ -46,10 +42,10 @@ workbox.routing.registerRoute(
 
 workbox.routing.registerRoute(
   /^https:\/\/(fonts.gstatic.com|fonts.googleapis.com|cdn.jsdelivr.net)/,
-  workbox.strategies.cacheFirst({
+  new workbox.strategies.CacheFirst({
     cacheName: "external",
     plugins: [
-      new workbox.expiration.Plugin({
+      new workbox.expiration.ExpirationPlugin({
         maxAgeSeconds: 365 * 24 * 60 * 60
       })
     ]
@@ -58,10 +54,10 @@ workbox.routing.registerRoute(
 
 workbox.routing.registerRoute(
   /\/[^\.]*(?!\.)$/,
-  workbox.strategies.cacheFirst({
+  new workbox.strategies.CacheFirst({
     cacheName: "page",
     plugins: [
-      new workbox.expiration.Plugin({
+      new workbox.expiration.ExpirationPlugin({
         maxAgeSeconds: 60 * 60
       })
     ]
